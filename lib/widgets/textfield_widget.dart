@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-Widget textField(String labelText, {String Function(String) validator, Icon prefixIcon}){
+Widget textField(String labelText, {String Function(String) validator, Icon prefixIcon, Function function, bool readOnly, TextEditingController controller}){
   return SizedBox(
     height: 40.0,
     child: TextFormField(
@@ -14,7 +14,9 @@ Widget textField(String labelText, {String Function(String) validator, Icon pref
         ),
       ),
       validator: validator,
-      keyboardType: TextInputType.emailAddress,
+      onTap: function,
+      readOnly: readOnly == null ? false : true,
+      controller: controller,
     )
   );
 }

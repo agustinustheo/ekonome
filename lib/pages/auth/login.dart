@@ -5,7 +5,6 @@ import 'package:EkonoMe/services/navigator_service.dart';
 import 'package:EkonoMe/widgets/background_widget.dart';
 import 'package:EkonoMe/widgets/button_widget.dart';
 import 'package:EkonoMe/widgets/container_widget.dart';
-import 'package:EkonoMe/widgets/space_widget.dart';
 import 'package:EkonoMe/widgets/textfield_widget.dart';
 import 'package:EkonoMe/widgets/textlink_widget.dart';
 import 'package:EkonoMe/widgets/title_widget.dart';
@@ -38,25 +37,25 @@ class _LoginPageState extends State<LoginPage> {
         Column(
           children: [
             title('Welcome!'),
-            space(10.0),
+            SizedBox(height: 10.0),
             subtitle('Enter your email and password'),
-            space(50.0),
+            SizedBox(height: 50.0),
             textField(
               "Enter email",
               prefixIcon: Icon(Icons.email)
             ),
-            space(20.0),
+            SizedBox(height: 20.0),
             textField(
               "Enter password",
               prefixIcon: Icon(Icons.lock)
             ),
-            space(30.0),
+            SizedBox(height: 30.0),
             textLink(
               "Don't have an account? Register here",
-              () => NavigatorService.pushReplace(context, RegisterPage())
+              () => NavigatorService.pushReplacement(context, RegisterPage())
             ),
-            space(30.0),
-            fullButton("Login", (){}),
+            SizedBox(height: 30.0),
+            fullButton((){}, text: "Login"),
           ]
         )
       )

@@ -20,3 +20,13 @@ Widget subtitle(String text){
     ),
   );
 }
+
+Widget smallTitle(String text){
+  return Text(
+    text,
+    style: new TextStyle(
+      color: Colors.grey[800],
+      fontSize: 14.0
+    ),
+  );
+}

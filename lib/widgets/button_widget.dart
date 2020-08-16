@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 
-Widget button(String text, Function function){
+Widget button(Function function, {String text, Icon icon, double radius}){
   return FlatButton(
     color: Colors.greenAccent,
     textColor: Colors.white,
     splashColor: Colors.greenAccent[700],
     onPressed: function,
-    child: Text(
+    child: text == null? icon : Text(
       text,
       style: TextStyle(fontSize: 16.0),
     ),
     shape: RoundedRectangleBorder(
-      borderRadius: new BorderRadius.circular(15.0)
+      borderRadius: new BorderRadius.circular(radius??15.0)
     ),
   );
 }
 
-Widget fullButton(String text, Function function){
+Widget fullButton(Function function, {String text, Icon icon, double radius}){
   return SizedBox(
     width: double.infinity,
-    child: button(text, function),
+    child: button(function, text: text, icon: icon, radius: radius),
   );
 }
