@@ -1,7 +1,7 @@
+import 'package:EkonoMe/API/auth/session_service.dart';
+import 'package:EkonoMe/pages/widgets/greenify_examples/screen/mission_list_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:greenify/pages/home/main/mission/list.dart';
-import 'package:greenify/util/session_util.dart';
 
 class Missions extends StatefulWidget {
   Missions({Key key}) : super(key: key);
@@ -15,12 +15,12 @@ class _MissionsState extends State<Missions> {
   String _userDocRefrence;
 
   _MissionsState() {
-    getUserLogin().then((val) => setState(() {
-      _userID = val;
-      getUserByAuthUID(_userID).then((val) => setState((){
-        _userDocRefrence = val.documentID;
-      }));
-    }));
+    SessionService.getUserLogin().then((val) => setState(() {
+          _userID = val;
+          SessionService.getUserByAuthUID(_userID).then((val) => setState(() {
+                _userDocRefrence = val.documentID;
+              }));
+        }));
   }
 
   @override
@@ -38,7 +38,7 @@ class _MissionsState extends State<Missions> {
         child: Padding(
             padding: EdgeInsets.only(left: 15, top: 15),
             child:
-                Column(children: <Widget>[_missionHeader(), _missionList()])));
+                Column(children: <Widget>[_missionHeader(), MissionList()])));
   }
 
   Widget _missionList() {
@@ -77,7 +77,7 @@ class _MissionsState extends State<Missions> {
         FlatButton(
           onPressed: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => MissionList()));
+                MaterialPageRoute(builder: (context) => _missionList()));
           },
           child: Text(
             "MORE",
@@ -120,30 +120,31 @@ class _MissionsState extends State<Missions> {
                   ),
                   SizedBox(height: 10),
                   Padding(
-                    padding: EdgeInsets.only(left: 20, right: 20),
-                    child: new StreamBuilder(
-                      stream: Firestore.instance
-                        .collection('users')
-                        .document(_userDocRefrence)
-                        .collection('missions')
-                        .where('mission_id', isEqualTo: document.documentID)
-                        .snapshots(),
-                      builder: (context, snapshot){
-                        if(!snapshot.hasData || snapshot.data.documents.length == 0) {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: _progress(0, 5)
-                          );
-                        }
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: _progress(snapshot.data.documents[0]['progress'], 5)
-                        );
-                      }
-                    )
-                  )
+                      padding: EdgeInsets.only(left: 20, right: 20),
+                      child: new StreamBuilder(
+                          stream: Firestore.instance
+                              .collection('users')
+                              .document(_userDocRefrence)
+                              .collection('missions')
+                              .where('mission_id',
+                                  isEqualTo: document.documentID)
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData ||
+                                snapshot.data.documents.length == 0) {
+                              return Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: _progress(0, 5));
+                            }
+                            return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: _progress(
+                                    snapshot.data.documents[0]['progress'], 5));
+                          }))
                 ],
               )),
             ],

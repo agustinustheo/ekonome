@@ -1,21 +1,29 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:greenify/pages/auth/login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
+import '../../API/auth/auth_service.dart';
+import '../../Bloc/auth/register_bloc.dart';
+import 'login.dart';
 
 class RegisterPage extends StatefulWidget {
-  RegisterPage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
   String _email, _password;
+
+  List<String> _credentials;
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final registerBloc = RegisterBloc(AuthService());
+
+  void _feedBloc() {
+    this._credentials.add(_email);
+    this._credentials.add(_password);
+    this.registerBloc.credentials.add(_credentials);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -37,16 +45,11 @@ class _RegisterPageState extends State<RegisterPage> {
                   margin: const EdgeInsets.only(
                     bottom: 25.0,
                   ),
-                  child: new Image.asset(
-                    'assets/graphics/greenify_logo.png'
-                  ),
+                  child: new Image.asset('assets/graphics/greenify_logo.png'),
                 ),
                 Text(
                   'Register',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 28
-                  ),
+                  style: TextStyle(color: Colors.white, fontSize: 28),
                 ),
                 new Container(
                   margin: const EdgeInsets.all(
@@ -56,10 +59,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     width: 275.0,
                     child: TextFormField(
                       cursorColor: Colors.white,
-                      validator: (input){
-                        if(input.isEmpty){
+                      validator: (input) {
+                        if (input.isEmpty) {
                           return 'Please type an email';
                         }
+                        return "";
                       },
                       onSaved: (input) => _email = input,
                       decoration: InputDecoration(
@@ -82,13 +86,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     width: 275.0,
                     child: TextFormField(
                       cursorColor: Colors.white,
-                      validator: (input){
-                        if(input.isEmpty){
+                      validator: (input) {
+                        if (input.isEmpty) {
                           return 'Please provide a password';
-                        }
-                        else if(input.length < 6){
+                        } else if (input.length < 6) {
                           return 'Your password needs to be atleast 6 characters';
                         }
+                        return "";
                       },
                       onSaved: (input) => _password = input,
                       decoration: InputDecoration(
@@ -111,31 +115,28 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: new SizedBox(
                     width: 255.0,
                     child: RaisedButton(
-                      onPressed: signUp,
+                      onPressed: _feedBloc,
                       padding: EdgeInsets.all(10.0),
                       color: Colors.white,
                       child: Text(
                         'Play',
-                        style: new TextStyle(
-                          fontSize: 24.0
-                        ),
+                        style: new TextStyle(fontSize: 24.0),
                       ),
                     ),
                   ),
                 ),
                 new InkWell(
-                    child: Text(
-                      'Already have an account? Login here',
-                      style: new TextStyle(
-                        fontSize: 16.0, 
-                        color: Colors.white,
-                      ),
+                  child: Text(
+                    'Already have an account? Login here',
+                    style: new TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.white,
                     ),
-                    onTap: () {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => LoginPage())
-                      );
-                    },
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => LoginPage()));
+                  },
                 ),
               ],
             ),
@@ -144,3 +145,4 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
   }
+}

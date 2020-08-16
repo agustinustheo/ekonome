@@ -1,20 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:greenify/util/session_util.dart';
+import '../../../../API/auth/session_service.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-class RedeemList extends StatefulWidget {
-  RedeemList({Key key}) : super(key: key);
+class Donate extends StatefulWidget {
+  Donate({Key key}) : super(key: key);
 
   @override
-  _RedeemListState createState() => _RedeemListState();
+  _DonateState createState() => _DonateState();
 }
 
-class _RedeemListState extends State<RedeemList> {
+class _DonateState extends State<Donate> {
   String _userID;
 
-  _RedeemListState() {
-    getUserLogin().then((val) => setState(() {
+  _DonateState() {
+    SessionService.getUserLogin().then((val) => setState(() {
           _userID = val;
         }));
   }
@@ -23,7 +23,7 @@ class _RedeemListState extends State<RedeemList> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Redeem"),
+          title: Text("Donate"),
         ),
         body: Container(color: Colors.black, child: _listView()));
   }
@@ -31,11 +31,7 @@ class _RedeemListState extends State<RedeemList> {
   Container _listView() {
     return Container(
         child: StreamBuilder(
-            stream: Firestore.instance
-                .collection('redeemables')
-                .where('is_redeemed', isEqualTo: false)
-                .where('user_id', isEqualTo: _userID)
-                .snapshots(),
+            stream: Firestore.instance.collection('donations').snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) return new Container();
               return ListView.builder(
@@ -76,7 +72,7 @@ class _RedeemListState extends State<RedeemList> {
                   ),
                   SizedBox(height: 3),
                   Text(
-                    document['points'].toString() + " GP",
+                    "Total donations: " + document['points'].toString() + " GP",
                     textScaleFactor: 1,
                     style: TextStyle(
                         fontWeight: FontWeight.bold, color: Colors.white),
@@ -93,11 +89,11 @@ class _RedeemListState extends State<RedeemList> {
                     width: double.maxFinite, // set width to maxFinite
                     child: OutlineButton(
                       onPressed: () {
-                        _onRedeem(document);
+                        _onDonate(document);
                       },
                       borderSide: BorderSide(color: Colors.white),
                       child: Text(
-                        "CLAIM",
+                        "DONATE",
                         style: TextStyle(color: Colors.white),
                         textScaleFactor: 1.3,
                       ),
@@ -110,42 +106,61 @@ class _RedeemListState extends State<RedeemList> {
     );
   }
 
-  void _onRedeem(DocumentSnapshot document) {
-    int points;
-    getUserByAuthUID(_userID).then((val) => {
-          points = val['points'] + document['points'],
-          Firestore.instance
-              .collection('redeemables')
-              .document(document.documentID)
-              .updateData({'is_redeemed': true}),
-          Firestore.instance
-              .collection('users')
-              .document(val.documentID)
-              .updateData({'points': points}),
-          Alert(
-            context: context,
-            type: AlertType.success,
-            title: "Claimed!",
-            desc: "Thank you for making our world better!",
-            buttons: [
-              DialogButton(
-                child: Text(
-                  "OK",
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
-                onPressed: () => Navigator.pop(context),
-                width: 120,
-              )
-            ],
-          ).show(),
-          sendNotification(
-              document['title'],
-              'YAY! You\'ve redeemed ' +
-                  document['points'].toString() +
-                  ' points for ' +
-                  document['title'].toString() +
-                  '!',
-              _userID)
+  void _onDonate(DocumentSnapshot document) {
+    SessionService.getUserByAuthUID(_userID).then((val) => {
+          if (val['points'] > 100)
+            {
+              Firestore.instance
+                  .collection('users')
+                  .document(val.documentID)
+                  .updateData({'points': val['points'] - 100}),
+              Firestore.instance
+                  .collection('donations')
+                  .document(document.documentID)
+                  .updateData({'points': document['points'] + 100}),
+              Alert(
+                context: context,
+                type: AlertType.success,
+                title: "You Donated!",
+                desc: "Thank you for making our world better!",
+                buttons: [
+                  DialogButton(
+                    child: Text(
+                      "OK",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                    width: 120,
+                  )
+                ],
+              ).show(),
+              SessionService.sendNotification(
+                  document['title'],
+                  'Thank you! You\'ve donated 100 points for ' +
+                      document['title'].toString() +
+                      '!',
+                  _userID)
+            }
+          else
+            {
+              Alert(
+                context: context,
+                type: AlertType.error,
+                title: "You do not have enough points",
+                desc:
+                    "Sorry you can't donate now. You need to gather more points.",
+                buttons: [
+                  DialogButton(
+                    child: Text(
+                      "OK",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                    width: 120,
+                  )
+                ],
+              ).show(),
+            }
         });
   }
 }

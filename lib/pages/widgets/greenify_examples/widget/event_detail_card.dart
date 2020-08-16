@@ -1,6 +1,6 @@
+import '../screen/event_detail_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:greenify/pages/home/event/card/detail.dart';
 
 class EventDetailCard extends StatelessWidget {
   final DocumentSnapshot document;
@@ -10,8 +10,10 @@ class EventDetailCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => EventDetailView(this.document)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EventDetailView(this.document)));
       },
       child: Column(
         children: <Widget>[

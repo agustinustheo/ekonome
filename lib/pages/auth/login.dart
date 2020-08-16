@@ -1,22 +1,27 @@
+import 'package:EkonoMe/API/auth/auth_service.dart';
+import 'package:EkonoMe/Bloc/auth/login_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
-import 'package:greenify/pages/auth/register.dart';
-import 'package:greenify/pages/home.dart';
-import 'package:greenify/util/session_util.dart';
+import '../auth/register.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
   String _email, _password;
+
+  List<String> _credentials;
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final loginBloc = LoginBloc(AuthService());
+
+  void _feedBloc() {
+    this._credentials.add(_email);
+    this._credentials.add(_password);
+    this.loginBloc.credentials.add(_credentials);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +59,11 @@ class _LoginPageState extends State<LoginPage> {
                     child: TextFormField(
                       cursorColor: Colors.white,
                       validator: (input) {
+                        String result = "";
                         if (input.isEmpty) {
-                          return 'Please type an email';
+                          result = 'Please type an email';
                         }
+                        return result;
                       },
                       onSaved: (input) => _email = input,
                       decoration: InputDecoration(
@@ -80,11 +87,14 @@ class _LoginPageState extends State<LoginPage> {
                     child: TextFormField(
                       cursorColor: Colors.white,
                       validator: (input) {
+                        String result;
                         if (input.isEmpty) {
-                          return 'Please provide a password';
+                          result = 'Please provide a password';
                         } else if (input.length < 6) {
-                          return 'Your password needs to be atleast 6 characters';
+                          result =
+                              'Your password needs to be atleast 6 characters';
                         }
+                        return result;
                       },
                       onSaved: (input) => _password = input,
                       decoration: InputDecoration(
@@ -113,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: new SizedBox(
                     width: 255.0,
                     child: RaisedButton(
-                      onPressed: signIn,
+                      onPressed: _feedBloc,
                       padding: EdgeInsets.all(10.0),
                       color: Colors.white,
                       child: Text(

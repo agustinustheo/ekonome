@@ -1,48 +1,50 @@
+import 'package:EkonoMe/API/auth/session_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:greenify/util/session_util.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-class Donate extends StatefulWidget {
-  Donate({Key key}) : super(key: key);
+class RedeemList extends StatefulWidget {
+  RedeemList({Key key}) : super(key: key);
 
   @override
-  _DonateState createState() => _DonateState();
+  _RedeemListState createState() => _RedeemListState();
 }
 
-class _DonateState extends State<Donate> {
+class _RedeemListState extends State<RedeemList> {
   String _userID;
 
-  _DonateState() {
-    getUserLogin().then((val) => setState(() {
-      _userID = val;
-    }));
+  _RedeemListState() {
+    SessionService.getUserLogin().then((val) => setState(() {
+          _userID = val;
+        }));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Donate"),
+          title: Text("Redeem"),
         ),
         body: Container(color: Colors.black, child: _listView()));
   }
 
   Container _listView() {
     return Container(
-      child: StreamBuilder(
-        stream: Firestore.instance.collection('donations')
-          .snapshots(),
-        builder: (context, snapshot){
-          if(!snapshot.hasData) return new Container();
-          return ListView.builder(
-            padding: EdgeInsets.all(10),
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, index) => _missionItem(snapshot.data.documents[index]),
-          );
-        }
-      )
-    );
+        child: StreamBuilder(
+            stream: Firestore.instance
+                .collection('redeemables')
+                .where('is_redeemed', isEqualTo: false)
+                .where('user_id', isEqualTo: _userID)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) return new Container();
+              return ListView.builder(
+                padding: EdgeInsets.all(10),
+                itemCount: snapshot.data.documents.length,
+                itemBuilder: (context, index) =>
+                    _missionItem(snapshot.data.documents[index]),
+              );
+            }));
   }
 
   Widget _missionItem(DocumentSnapshot document) {
@@ -74,7 +76,7 @@ class _DonateState extends State<Donate> {
                   ),
                   SizedBox(height: 3),
                   Text(
-                    "Total donations: " + document['points'].toString() + " GP",
+                    document['points'].toString() + " GP",
                     textScaleFactor: 1,
                     style: TextStyle(
                         fontWeight: FontWeight.bold, color: Colors.white),
@@ -91,11 +93,11 @@ class _DonateState extends State<Donate> {
                     width: double.maxFinite, // set width to maxFinite
                     child: OutlineButton(
                       onPressed: () {
-                        _onDonate(document);
+                        _onRedeem(document);
                       },
                       borderSide: BorderSide(color: Colors.white),
                       child: Text(
-                        "DONATE",
+                        "CLAIM",
                         style: TextStyle(color: Colors.white),
                         textScaleFactor: 1.3,
                       ),
@@ -108,59 +110,42 @@ class _DonateState extends State<Donate> {
     );
   }
 
-  void _onDonate(DocumentSnapshot document) {
-    getUserByAuthUID(_userID).then((val) => {
-      if(val['points'] > 100){
-        Firestore.instance.collection('users').document(val.documentID)
-          .updateData({
-            'points': val['points'] - 100
-          }),
-        Firestore.instance.collection('donations').document(document.documentID)
-          .updateData({
-            'points': document['points'] + 100
-          }),
-        Alert(
-          context: context,
-          type: AlertType.success,
-          title: "You Donated!",
-          desc:
-              "Thank you for making our world better!",
-          buttons: [
-            DialogButton(
-              child: Text(
-                "OK",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-              onPressed: () => Navigator.pop(context),
-              width: 120,
-            )
-          ],
-        ).show(),
-        sendNotification(
-          document['title'], 
-          'Thank you! You\'ve donated 100 points for ' + document['title'].toString() + '!',
-          _userID
-        )
-      }
-      else{
-        Alert(
-          context: context,
-          type: AlertType.error,
-          title: "You do not have enough points",
-          desc:
-              "Sorry you can't donate now. You need to gather more points.",
-          buttons: [
-            DialogButton(
-              child: Text(
-                "OK",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-              onPressed: () => Navigator.pop(context),
-              width: 120,
-            )
-          ],
-        ).show(),
-      }
-    });
+  void _onRedeem(DocumentSnapshot document) {
+    int points;
+    SessionService.getUserByAuthUID(_userID).then((val) => {
+          points = val['points'] + document['points'],
+          Firestore.instance
+              .collection('redeemables')
+              .document(document.documentID)
+              .updateData({'is_redeemed': true}),
+          Firestore.instance
+              .collection('users')
+              .document(val.documentID)
+              .updateData({'points': points}),
+          Alert(
+            context: context,
+            type: AlertType.success,
+            title: "Claimed!",
+            desc: "Thank you for making our world better!",
+            buttons: [
+              DialogButton(
+                child: Text(
+                  "OK",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+                onPressed: () => Navigator.pop(context),
+                width: 120,
+              )
+            ],
+          ).show(),
+          SessionService.sendNotification(
+              document['title'],
+              'YAY! You\'ve redeemed ' +
+                  document['points'].toString() +
+                  ' points for ' +
+                  document['title'].toString() +
+                  '!',
+              _userID)
+        });
   }
 }

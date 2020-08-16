@@ -1,6 +1,6 @@
+import 'package:EkonoMe/API/auth/session_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:greenify/util/session_util.dart';
 
 class Notifications extends StatefulWidget {
   Notifications({Key key}) : super(key: key);
@@ -13,11 +13,9 @@ class _NotificationsState extends State<Notifications> {
   String _userID;
 
   _NotificationsState() {
-    getUserLogin().then((val) => setState(() {
+    SessionService.getUserLogin().then((val) => setState(() {
           _userID = val;
-        }
-      )
-    );
+        }));
   }
 
   @override
@@ -32,19 +30,19 @@ class _NotificationsState extends State<Notifications> {
   Container _listView() {
     return Container(
         child: new StreamBuilder(
-        stream: Firestore.instance.collection('notifications')
-          .where('user_id', isEqualTo: _userID)
-          .snapshots(),
-        builder: (context, snapshot){
-          if(!snapshot.hasData) return new Container();
-          return ListView.builder(
-            padding: EdgeInsets.all(10),
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, index) => _missionItem(snapshot.data.documents[index]),
-          );
-        }
-      )
-    );
+            stream: Firestore.instance
+                .collection('notifications')
+                .where('user_id', isEqualTo: _userID)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) return new Container();
+              return ListView.builder(
+                padding: EdgeInsets.all(10),
+                itemCount: snapshot.data.documents.length,
+                itemBuilder: (context, index) =>
+                    _missionItem(snapshot.data.documents[index]),
+              );
+            }));
   }
 
   Widget _missionItem(DocumentSnapshot document) {

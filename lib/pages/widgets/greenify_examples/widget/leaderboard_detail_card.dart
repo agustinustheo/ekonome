@@ -2,13 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class LeaderboardDetailCard extends StatelessWidget {
+// ignore: must_be_immutable
+class LeaderboardDetailCard extends StatefulWidget {
   final int idx;
   DocumentSnapshot document;
   LeaderboardDetailCard(this.document, this.idx);
 
-  Widget _generateColumn(DocumentSnapshot document){
-    if(document.data.containsKey('username')){
+  @override
+  _LeaderboardDetailCardState createState() => _LeaderboardDetailCardState();
+}
+
+class _LeaderboardDetailCardState extends State<LeaderboardDetailCard> {
+  Widget _generateColumn(DocumentSnapshot document) {
+    if (document.data.containsKey('username')) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -43,34 +49,31 @@ class LeaderboardDetailCard extends StatelessWidget {
           child: Text(
             document['email'],
             style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18),
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
           ),
         ),
       ],
     );
   }
 
-  Widget _imageLoad(DocumentSnapshot document){
-        if(document.data.containsKey('profile_pic_url')){
-          return new FadeInImage(
-            image: NetworkImage(document['profile_pic_url']),
-            placeholder: AssetImage('assets/graphics/user/anonymous.jpg'),
-            fadeInDuration: Duration(milliseconds: 100),
-            fadeOutDuration: Duration(milliseconds: 100),
-          );
-        }
-        else{
-          return new Image.asset(
-            'assets/graphics/user/anonymous.jpg',
-          );
-        }
+  Widget _imageLoad(DocumentSnapshot document) {
+    if (document.data.containsKey('profile_pic_url')) {
+      return new FadeInImage(
+        image: NetworkImage(document['profile_pic_url']),
+        placeholder: AssetImage('assets/graphics/user/anonymous.jpg'),
+        fadeInDuration: Duration(milliseconds: 100),
+        fadeOutDuration: Duration(milliseconds: 100),
+      );
+    } else {
+      return new Image.asset(
+        'assets/graphics/user/anonymous.jpg',
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    int pos = this.idx + 1;
+    int pos = this.widget.idx + 1;
 
     return Padding(
       padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 5, bottom: 5),
@@ -98,19 +101,16 @@ class LeaderboardDetailCard extends StatelessWidget {
                       ),
                       Align(
                         child: new Container(
-                          width: 70.0,
-                          child: new ClipRRect(
-                            borderRadius: new BorderRadius.circular(100.0),
-                            child: _imageLoad(document)
-                          )
-                        ),
+                            width: 70.0,
+                            child: new ClipRRect(
+                                borderRadius: new BorderRadius.circular(100.0),
+                                child: _imageLoad(widget.document))),
                       ),
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Container(
-                          margin: const EdgeInsets.only(top: 16),
-                          child: _generateColumn(this.document)
-                        ),
+                            margin: const EdgeInsets.only(top: 16),
+                            child: _generateColumn(this.widget.document)),
                       ),
                     ],
                   ),
@@ -125,7 +125,9 @@ class LeaderboardDetailCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0, top: 5, right: 10),
                   child: Text(
-                    document.data.containsKey('points') ? document['points'].toString() + " GP" : "0 GP",
+                    widget.document.data.containsKey('points')
+                        ? widget.document['points'].toString() + " GP"
+                        : "0 GP",
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -139,9 +141,9 @@ class LeaderboardDetailCard extends StatelessWidget {
       ),
     );
   }
-  
-  Widget crown(int pos){
-  if (pos == 1) {
+
+  Widget crown(int pos) {
+    if (pos == 1) {
       return Padding(
           padding: const EdgeInsets.only(right: 0.0),
           child: Stack(
@@ -163,8 +165,7 @@ class LeaderboardDetailCard extends StatelessWidget {
               )
             ],
           ));
-    } 
-    else if (pos == 2) {
+    } else if (pos == 2) {
       return Padding(
           padding: const EdgeInsets.only(right: 0.0),
           child: Stack(
@@ -186,8 +187,7 @@ class LeaderboardDetailCard extends StatelessWidget {
               )
             ],
           ));
-    } 
-    else if (pos == 3) {
+    } else if (pos == 3) {
       return Padding(
           padding: const EdgeInsets.only(right: 0.0),
           child: Stack(
@@ -209,8 +209,7 @@ class LeaderboardDetailCard extends StatelessWidget {
               )
             ],
           ));
-    } 
-    else {
+    } else {
       return Container(
         margin: const EdgeInsets.only(left: 2),
         child: CircleAvatar(
@@ -226,5 +225,4 @@ class LeaderboardDetailCard extends StatelessWidget {
       );
     }
   }
-    
 }

@@ -1,6 +1,6 @@
+import 'package:EkonoMe/API/auth/session_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:greenify/util/session_util.dart';
 
 class MissionList extends StatefulWidget {
   MissionList({Key key}) : super(key: key);
@@ -11,12 +11,15 @@ class MissionList extends StatefulWidget {
 
 class _MissionListState extends State<MissionList> {
   String _userID;
+  // ignore: unused_field
   String _userDocRefrence;
 
+  int hearts = 1;
+
   _MissionListState() {
-    getUserLogin().then((val) => setState(() {
+    SessionService.getUserLogin().then((val) => setState(() {
           _userID = val;
-          getUserByAuthUID(_userID).then((val) => setState(() {
+          SessionService.getUserByAuthUID(_userID).then((val) => setState(() {
                 _userDocRefrence = val.documentID;
               }));
         }));
@@ -88,30 +91,19 @@ class _MissionListState extends State<MissionList> {
                   SizedBox(height: 10),
                   Padding(
                       padding: EdgeInsets.only(left: 20, right: 20),
-                      child: new StreamBuilder(
-                          stream: Firestore.instance
-                              .collection('users')
-                              .document(_userDocRefrence)
-                              .collection('missions')
-                              .where('mission_id',
-                                  isEqualTo: document.documentID)
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData ||
-                                snapshot.data.documents.length == 0) {
-                              return Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: _progress(0, 5));
-                            }
-                            return Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: _progress(
-                                    snapshot.data.documents[0]['progress'], 5));
-                          }))
+                      child: GestureDetector(
+                        onTap: () => {
+                          setState(() {
+                            hearts += 1;
+                          })
+                        },
+                        child: Container(
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: _progress(hearts, 5)),
+                        ),
+                      ))
                 ],
               )),
             ],

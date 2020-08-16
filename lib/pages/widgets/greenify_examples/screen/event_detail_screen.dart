@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:greenify/util/session_util.dart';
+import '../../../../API/auth/session_service.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class EventDetailView extends StatefulWidget {
@@ -16,11 +16,9 @@ class _EventDetailState extends State<EventDetailView> {
   String _userID;
 
   _EventDetailState(this.document) {
-    getUserLogin().then((val) => setState(() {
+    SessionService.getUserLogin().then((val) => setState(() {
           _userID = val;
-        }
-      )
-    );
+        }));
   }
 
   @override
@@ -144,7 +142,11 @@ class _EventDetailState extends State<EventDetailView> {
                     width: 255.0,
                     child: RaisedButton(
                       onPressed: () => {
-                        sendRedeemable(document['name'].toString(), document['points'], document['description'].toString(), _userID),
+                        SessionService.sendRedeemable(
+                            document['name'].toString(),
+                            document['points'],
+                            document['description'].toString(),
+                            _userID),
                         Alert(
                           context: context,
                           type: AlertType.success,
@@ -155,7 +157,8 @@ class _EventDetailState extends State<EventDetailView> {
                             DialogButton(
                               child: Text(
                                 "OK",
-                                style: TextStyle(color: Colors.white, fontSize: 20),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
                               ),
                               onPressed: () => Navigator.pop(context),
                               width: 120,
