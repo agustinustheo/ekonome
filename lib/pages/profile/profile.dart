@@ -1,12 +1,7 @@
-import 'package:EkonoMe/pages/auth/register.dart';
-import 'package:EkonoMe/services/auth_service.dart';
-import 'package:EkonoMe/Bloc/auth/login_bloc.dart';
-import 'package:EkonoMe/services/navigator_service.dart';
 import 'package:EkonoMe/widgets/background_widget.dart';
 import 'package:EkonoMe/widgets/button_widget.dart';
 import 'package:EkonoMe/widgets/container_widget.dart';
 import 'package:EkonoMe/widgets/textfield_widget.dart';
-import 'package:EkonoMe/widgets/textlink_widget.dart';
 import 'package:EkonoMe/widgets/title_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -28,13 +23,13 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
-        initialDate: selectedDate,
+        initialDate: selectedDate??DateTime.now(),
         firstDate: DateTime(2015, 8),
         lastDate: DateTime(2101));
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
-        _dateTimeController.text = selectedDate == null ? "" : "${selectedDate.toLocal()}".split(' ')[0];
+        _dateTimeController.text = "${selectedDate.toLocal()}".split(' ')[0];
       });
   }
 
@@ -61,7 +56,7 @@ class _ProfilePageState extends State<ProfilePage> {
             textField(
               "Reset date",
               prefixIcon: Icon(Icons.calendar_today),
-              function: () => _selectDate(context),
+              onTap: () => _selectDate(context),
               readOnly: true,
               controller: _dateTimeController
             ),

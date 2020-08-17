@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 Widget container(Widget child){
   return Column(
+    mainAxisSize: MainAxisSize.max,
     mainAxisAlignment: MainAxisAlignment.center,
-    crossAxisAlignment: CrossAxisAlignment.center,
     children: <Widget>[
       Container(
         margin: EdgeInsets.all(20.0),

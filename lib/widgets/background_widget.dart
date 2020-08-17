@@ -5,6 +5,7 @@ Widget background(Widget child){
   return Scaffold(
     backgroundColor: Colors.white,
     body: Stack(
+      alignment: Alignment.center,
       children: [
         Positioned(
           top: -500,
@@ -17,7 +18,11 @@ Widget background(Widget child){
           child: bigCircle(Colors.greenAccent[100]),
         ),
         Positioned.fill(
-          child: child
+          child: Center(
+            child: SingleChildScrollView(
+              child: child
+            )
+          )
         ),
       ],
     )
