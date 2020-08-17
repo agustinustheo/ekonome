@@ -1,8 +1,9 @@
 import 'dart:async';
-import 'package:EkonoMe/helpers/firestore_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'firestore_helper.dart';
 
 class SessionHelper{
   static Future<bool> saveUserLogin(FirebaseUser user) async {
@@ -21,18 +22,30 @@ class SessionHelper{
   }
 
   static Future<DocumentSnapshot> getUserByAuthUID(String authUid) async {
-    Query user = Firestore.instance
-        .collection('users')
-        .where("auth_uid", isEqualTo: authUid);
-    QuerySnapshot data = await user.getDocuments();
+    QuerySnapshot data = await FirestoreHelper
+    .getFirestoreDocuments(
+      "users", 
+      {
+        "=": 
+        {
+          "auth_uid": authUid
+        }
+      }
+    );
     return data.documents[0];
   }
 
   static Future<DocumentSnapshot> getUserByUsername(String username) async {
-    Query user = Firestore.instance
-        .collection('users')
-        .where("username", isEqualTo: username);
-    QuerySnapshot data = await user.getDocuments();
+    QuerySnapshot data = await FirestoreHelper
+    .getFirestoreDocuments(
+      "users", 
+      {
+        "=": 
+        {
+          "username": username
+        }
+      }
+    );
     return data.documents[0];
   }
 }
