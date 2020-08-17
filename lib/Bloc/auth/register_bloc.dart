@@ -1,9 +1,9 @@
-import 'package:EkonoMe/services/auth_service.dart';
+import 'package:EkonoMe/helpers/auth_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rxdart/subjects.dart';
 
 class RegisterBloc {
-  final AuthService service;
+  final AuthHelper helper;
 
   Stream<FirebaseUser> _createdUser = Stream.empty();
   PublishSubject<List<String>> _credentials = PublishSubject<List<String>>();
@@ -15,10 +15,15 @@ class RegisterBloc {
   Sink<List<String>> get credentials {
     return this._credentials;
   }
-
-  RegisterBloc(this.service) {
+  
+  RegisterBloc(this.helper){
     this._createdUser =
-        this._credentials.asyncMap(this.service.signUp).asBroadcastStream();
+        this._credentials.asyncMap(this.helper.signUp).asBroadcastStream();
+  }
+
+  // Sementara pakai ini
+  void register(List<String> creds) async{
+    await this.helper.signUp(creds);
   }
 
   void dispose() {

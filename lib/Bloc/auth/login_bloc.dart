@@ -1,8 +1,8 @@
-import 'package:EkonoMe/services/auth_service.dart';
+import 'package:EkonoMe/helpers/auth_helper.dart';
 import 'package:rxdart/subjects.dart';
 
 class LoginBloc {
-  final AuthService service;
+  final AuthHelper helper;
 
   Stream<bool> _isVerified = Stream.empty();
   PublishSubject<List<String>> _credentials = PublishSubject<List<String>>();
@@ -15,9 +15,14 @@ class LoginBloc {
     return this._credentials;
   }
 
-  LoginBloc(this.service) {
+  LoginBloc(this.helper) {
     this._isVerified =
-        this._credentials.asyncMap(this.service.signIn).asBroadcastStream();
+        this._credentials.asyncMap(this.helper.signIn).asBroadcastStream();
+  }
+
+  // Sementara pakai ini
+  void login(List<String> creds) async{
+    await this.helper.signIn(creds);
   }
 
   void dispose() {
