@@ -1,4 +1,5 @@
 import 'package:EkonoMe/pages/profile/profile.dart';
+import 'package:EkonoMe/pages/profile/set_template.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: ProfilePage()
+      home: SetTemplatePage()
     );
   }
 }
