@@ -13,8 +13,6 @@ class SetTemplatePage extends StatefulWidget {
 }
 
 class _SetTemplatePageState extends State<SetTemplatePage> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   // Initialize widget lists
   List<Widget> _moneyTemplates = new List<Widget>();
   List<String> _titleList = new List<String>();
@@ -23,67 +21,62 @@ class _SetTemplatePageState extends State<SetTemplatePage> {
   // Set initial state
   _SetTemplatePageState() {
     SessionHelper.getUserLogin().then((authUid) => {
-      FirestoreHelper.getFirestoreDocuments("templates", {
-        "=": {
-          "auth_uid": authUid 
-        }
-      }).then((value){
-        _titleList = value.documents.map<List<String>>((doc){
-          return List<String>.from(doc['titles']);
-        }).first;
-        
-        _percentageList = value.documents.map<List<int>>((doc){
-          return List<int>.from(doc['percentages']);
-        }).first;
-        
-        setState(() {
-          for (int i = 0; i < _titleList.length; i++) {    
-            _moneyTemplates.add(moneyTemplate(_titleList[i], _percentageList[i], removeMoneyTemplate));
-          }
+          FirestoreHelper.getFirestoreDocuments("templates", {
+            "=": {"auth_uid": authUid}
+          }).then((value) {
+            _titleList = value.documents.map<List<String>>((doc) {
+              return List<String>.from(doc['titles']);
+            }).first;
+
+            _percentageList = value.documents.map<List<int>>((doc) {
+              return List<int>.from(doc['percentages']);
+            }).first;
+
+            setState(() {
+              for (int i = 0; i < _titleList.length; i++) {
+                _moneyTemplates.add(moneyTemplate(
+                    _titleList[i], _percentageList[i], removeMoneyTemplate));
+              }
+            });
+          })
         });
-      })
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-
-    return background(
-      container(
-        Column(
-          children: [
-            title('Profile'),
-            SizedBox(height: 10.0),
-            subtitle('Create your template'),
-            SizedBox(height: 20.0),
-            _moneyTemplates.length > 0 ? Column(children: _moneyTemplates) : SizedBox(),
-            addMoneyTemplate(addNewMoneyTemplate),
-            fullButton(() => saveTemplate(), text: "Save")
-          ]
-        )
-      )
-    );
+    return background(container(Column(children: [
+      title('Profile'),
+      SizedBox(height: 10.0),
+      subtitle('Create your template'),
+      SizedBox(height: 20.0),
+      _moneyTemplates.length > 0
+          ? Column(children: _moneyTemplates)
+          : SizedBox(),
+      addMoneyTemplate(addNewMoneyTemplate),
+      fullButton(() => saveTemplate(), text: "Save")
+    ])));
   }
 
-  void addNewMoneyTemplate(String _title, int _percentage){
-    setState((){
-      if(_title != null && _percentage != null){
-        _moneyTemplates.add(moneyTemplate(_title, _percentage, removeMoneyTemplate));
+  void addNewMoneyTemplate(String _title, int _percentage) {
+    setState(() {
+      if (_title != null && _percentage != null) {
+        _moneyTemplates
+            .add(moneyTemplate(_title, _percentage, removeMoneyTemplate));
         _titleList.add(_title);
         _percentageList.add(_percentage);
       }
     });
   }
 
-  void removeMoneyTemplate(UniqueKey uk, String title, int percentage){
-    setState((){
+  void removeMoneyTemplate(UniqueKey uk, String title, int percentage) {
+    setState(() {
       _moneyTemplates.removeWhere((widget) => widget.key == uk);
-        _titleList.removeWhere((curr) => curr == title);
-        _percentageList.removeWhere((curr) => curr == percentage);
+      _titleList.removeWhere((curr) => curr == title);
+      _percentageList.removeWhere((curr) => curr == percentage);
     });
   }
 
-  void saveTemplate() async{
+  void saveTemplate() async {
     FirestoreHelper.insertToFirestore("templates", {
       "auth_uid": await SessionHelper.getUserLogin(),
       "titles": _titleList,
