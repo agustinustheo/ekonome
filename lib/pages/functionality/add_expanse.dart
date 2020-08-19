@@ -3,19 +3,18 @@ import 'package:EkonoMe/widgets/button_widget.dart';
 import 'package:EkonoMe/widgets/container_widget.dart';
 import 'package:EkonoMe/widgets/dropdown_widget.dart';
 import 'package:EkonoMe/widgets/textfield_widget.dart';
-import 'package:EkonoMe/widgets/title_widget.dart';
 import 'package:flutter/material.dart';
 
-class AddFundPage extends StatefulWidget {
-  AddFundPage({Key key, this.title}) : super(key: key);
+class AddExpansePage extends StatefulWidget {
+  AddExpansePage({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _AddFundPageState createState() => _AddFundPageState();
+  _AddExpansePageState createState() => _AddExpansePageState();
 }
 
-class _AddFundPageState extends State<AddFundPage> {
+class _AddExpansePageState extends State<AddExpansePage> {
   final Map<int, String> dropDownValues = {
     0: "Investment",
     1: "Saving",
@@ -48,22 +47,14 @@ class _AddFundPageState extends State<AddFundPage> {
               "Budgeting Rules\n10% Invest\n10% Debt\n50% Everyday Living expenses\n25% Wants, and the remaining 5% on Saving",
             ),
             SizedBox(
-              height: 20,
+              height: 10,
             ),
             Divider(
               height: 10,
               thickness: 2,
             ),
             SizedBox(
-              height: 20,
-            ),
-            Center(
-              child: subtitle(
-                "Start Saving",
-              ),
-            ),
-            SizedBox(
-              height: 25,
+              height: 10,
             ),
             textField(
               "Amount of money",
@@ -88,33 +79,9 @@ class _AddFundPageState extends State<AddFundPage> {
                 ),
               ],
             ),
-            SizedBox(
-              height: 5,
-            ),
-            Center(
-              child: smallTitle(
-                "or",
-              ),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            fullButton(() => addToSaving(), text: "Add to saving"),
-            SizedBox(
-              height: 10,
-            ),
-            fullButton(() => shareEqualy(), text: "Share Equally")
           ],
         ),
       ),
     );
   }
-}
-
-shareEqualy() {
-  //here to share equak function
-}
-
-addToSaving() {
-  //here to saving function
 }
