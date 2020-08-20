@@ -16,6 +16,13 @@ Widget button(Function function, {String text, Icon icon, double radius}){
   );
 }
 
+Widget helpbutton(Function function, {String text, Icon icon, double radius}){
+  return SizedBox(
+    width: 70,
+    child: button(function, text: text, icon: icon, radius: radius),
+  );
+}
+
 Widget fullButton(Function function, {String text, Icon icon, double radius}){
   return SizedBox(
     width: double.infinity,
