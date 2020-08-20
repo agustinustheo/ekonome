@@ -1,8 +1,10 @@
 import 'package:EkonoMe/models/DropdownItem.dart';
+import 'package:EkonoMe/widgets/button_widget.dart';
 import 'package:flutter/material.dart';
 
 class DropDownList extends StatefulWidget {
-  final Map<int, String> dictDropdown;
+  final Map<dynamic, dynamic> dictDropdown;
+  dynamic selectedItem = 0;
 
   DropDownList(this.dictDropdown);
 
@@ -11,7 +13,6 @@ class DropDownList extends StatefulWidget {
 }
 
 class _DropDownListState extends State<DropDownList> {
-  int selectedItem = 0;
   List<DropdownItemModel> _selectionList = List<DropdownItemModel>();
 
   @override
@@ -36,7 +37,7 @@ class _DropDownListState extends State<DropDownList> {
         borderRadius: BorderRadius.circular(10),
       ),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton<int>(
+        child: DropdownButton<dynamic>(
           isExpanded: true,
           hint: Text(
             "Choose Expense Target",
@@ -44,10 +45,10 @@ class _DropDownListState extends State<DropDownList> {
               color: Colors.grey[600],
             ),
           ),
-          value: this._selectionList[this.selectedItem].id,
-          onChanged: (int newVal) {
+          value: this._selectionList[this.widget.selectedItem].id,
+          onChanged: (dynamic newVal) {
             setState(() {
-              this.selectedItem = newVal;
+              this.widget.selectedItem = newVal;
             });
           },
           items: [
@@ -67,4 +68,25 @@ class _DropDownListState extends State<DropDownList> {
       ),
     );
   }
+}
+
+Widget dropdownListAndButtonWidget(Map<dynamic, dynamic> dropdownValues, Function function){
+  var ddl = DropDownList(dropdownValues);
+  if(dropdownValues == null) return Container(padding: EdgeInsets.only(top: 5.0, bottom: 5.0), child: Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Colors.greenAccent))));
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: <Widget>[
+      Flexible(
+        flex: 2,
+        child: ddl,
+      ),
+      Flexible(
+        flex: 1,
+        child: Container(
+          margin: const EdgeInsets.only(left: 10),
+          child: fullButton(() => function(ddl.selectedItem), text: "Add"),
+        ),
+      ),
+    ],
+  );
 }
