@@ -1,5 +1,6 @@
 import 'package:EkonoMe/models/DropdownItem.dart';
 import 'package:EkonoMe/widgets/button_widget.dart';
+import 'package:EkonoMe/widgets/circularprogress_widget.dart';
 import 'package:flutter/material.dart';
 
 class DropDownList extends StatefulWidget {
@@ -72,7 +73,7 @@ class _DropDownListState extends State<DropDownList> {
 
 Widget dropdownListAndButtonWidget(Map<dynamic, dynamic> dropdownValues, Function function){
   var ddl = DropDownList(dropdownValues);
-  if(dropdownValues == null) return Container(padding: EdgeInsets.only(top: 5.0, bottom: 5.0), child: Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Colors.greenAccent))));
+  if(dropdownValues == null) return circularProgress();
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: <Widget>[
