@@ -1,3 +1,4 @@
+import 'package:EkonoMe/helpers/session_helper.dart';
 import 'package:EkonoMe/models/ChartItemModel.dart';
 import 'package:EkonoMe/pages/functionality/add_expanse.dart';
 import 'package:EkonoMe/pages/functionality/add_fund.dart';
@@ -5,8 +6,9 @@ import 'package:EkonoMe/widgets/appbar_widget.dart';
 import 'package:EkonoMe/widgets/background_widget.dart';
 import 'package:EkonoMe/widgets/button_widget.dart';
 import 'package:EkonoMe/widgets/chart_bar_widget.dart';
+import 'package:EkonoMe/widgets/circularprogress_widget.dart';
 import 'package:EkonoMe/widgets/container_widget.dart';
-import 'package:EkonoMe/widgets/title_widget.dart';
+import 'package:EkonoMe/widgets/profile_widget.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -32,19 +34,25 @@ class _HomePageState extends State<HomePage> {
     ChartItemModel(0.9, "Hambur hamburin", "Rp. 0/120.000"),
     ChartItemModel(1.0, "Pesta", "Rp. 0/120.000")
   ];
+  String authUid = "";
+
+  _HomePageState() {
+    SessionHelper.getUserLogin().then((value) async{
+      authUid = value;
+    });
+  }
 
   Widget _buildContainer(Widget child) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.green.withOpacity(0.1),
-            spreadRadius: 5,
-            blurRadius: 10,
-            offset: Offset(0, 3), // changes position of shadow
-          ),
-        ],
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Colors.black.withOpacity(0.1),
+        //     spreadRadius: 1,
+        //     blurRadius: 1,
+        //   ),
+        // ],
         border: Border.all(
           width: .5,
           color: Colors.green,
@@ -59,30 +67,14 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    if(authUid == "") return background(circularProgress());
     return background(
       container(
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            title(
-              "Hello Timotius"
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            subtitle(
-              "Your balance: Rp. 1.450.000 (Saving)"
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            smallTitle(
-              "Budgeting Rules\n10% Invest\n10% Debt\n50% Everyday Living expenses\n25% Wants, and the remaining 5% on Saving",
-            ),
-            SizedBox(
-              height: 20,
-            ),
+            fullProfile(authUid),
             this._buildContainer(
               ListView.builder(
                 itemBuilder: (context, index) =>

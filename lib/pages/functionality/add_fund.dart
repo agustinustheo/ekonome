@@ -7,6 +7,7 @@ import 'package:EkonoMe/widgets/button_widget.dart';
 import 'package:EkonoMe/widgets/circularprogress_widget.dart';
 import 'package:EkonoMe/widgets/container_widget.dart';
 import 'package:EkonoMe/widgets/dropdown_widget.dart';
+import 'package:EkonoMe/widgets/profile_widget.dart';
 import 'package:EkonoMe/widgets/textfield_widget.dart';
 import 'package:EkonoMe/widgets/title_widget.dart';
 import 'package:flutter/material.dart';
@@ -23,13 +24,13 @@ class AddFundPage extends StatefulWidget {
 class _AddFundPageState extends State<AddFundPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Map<int, String> dropDownValues;
-  List<dynamic> percentages;
-  List<dynamic> currMoney;
-  String _id;
+  List<dynamic> percentages, currMoney;
+  String _id, authUid;
   int _money;
 
   _AddFundPageState() {
     SessionHelper.getUserLogin().then((value) async{
+      authUid = value;
       var q = await FirestoreHelper.getFirestoreDocuments(
         "templates", 
         query: {
@@ -64,12 +65,7 @@ class _AddFundPageState extends State<AddFundPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              title("Hello Timotius"),
-              SizedBox(height: 15),
-              subtitle("Your balance: Rp. 1.450.000 (Saving)"),
-              SizedBox(height: 15),
-              smallTitle("Budgeting Rules\n10% Invest\n10% Debt\n50% Everyday Living expenses\n25% Wants, and the remaining 5% on Saving",),
-              SizedBox(height: 20),
+              fullProfile(authUid),
               Divider(
                 height: 10,
                 thickness: 2,

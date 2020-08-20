@@ -1,8 +1,11 @@
+import 'package:EkonoMe/helpers/firestore_helper.dart';
+import 'package:EkonoMe/helpers/session_helper.dart';
 import 'package:EkonoMe/widgets/appbar_widget.dart';
 import 'package:EkonoMe/widgets/background_widget.dart';
 import 'package:EkonoMe/widgets/circularprogress_widget.dart';
 import 'package:EkonoMe/widgets/container_widget.dart';
 import 'package:EkonoMe/widgets/dropdown_widget.dart';
+import 'package:EkonoMe/widgets/profile_widget.dart';
 import 'package:EkonoMe/widgets/textfield_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -16,40 +19,42 @@ class AddExpansePage extends StatefulWidget {
 }
 
 class _AddExpansePageState extends State<AddExpansePage> {
-  final Map<int, String> dropDownValues = {
-    0: "Investment",
-    1: "Saving",
-    2: "Everyday Living",
-  };
+  Map<int, String> dropDownValues;
+  int _money;
+  String authUid;
+
+  _AddExpansePageState() {
+    SessionHelper.getUserLogin().then((value) async{
+      authUid = value;
+      var q = await FirestoreHelper.getFirestoreDocuments(
+        "templates", 
+        query: {
+          "=": {
+            "auth_uid": value
+          }
+        }
+      );
+
+      setState(() {
+        var data = q.documents[0]['titles'];
+        dropDownValues = new Map<int, String>();
+        for(int i=0; i<data.length; i++){
+          dropDownValues[i] = data[i];
+        }
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    if(dropDownValues == null) return background(circularProgress());
     return background(
       container(
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            Text(
-              "Hello Timotius",
-              style: TextStyle(fontSize: 25),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Text(
-              "Your balance: Rp. 1.450.000 (Saving)",
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Text(
-              "Budgeting Rules\n10% Invest\n10% Debt\n50% Everyday Living expenses\n25% Wants, and the remaining 5% on Saving",
-            ),
-            SizedBox(
-              height: 10,
-            ),
+            fullProfile(authUid),
             Divider(
               height: 10,
               thickness: 2,
@@ -64,22 +69,7 @@ class _AddExpansePageState extends State<AddExpansePage> {
             SizedBox(
               height: 10,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Flexible(
-                  flex: 2,
-                  child: DropDownList(this.dropDownValues),
-                ),
-                Flexible(
-                  flex: 1,
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 10),
-                    child: fullButton(() {}, text: "Add"),
-                  ),
-                ),
-              ],
-            ),
+            dropdownListAndButtonWidget(this.dropDownValues, () => {}),
           ],
         ),
       ),

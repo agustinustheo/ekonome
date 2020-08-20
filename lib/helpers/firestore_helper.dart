@@ -20,6 +20,13 @@ class FirestoreHelper{
     return q;
   }
 
+  static Query firestoreQueryBuilder(String collectionName, {Map<String, Map<String, dynamic>> query}){
+    Query q = Firestore.instance
+        .collection(collectionName);
+    if(query != null) q = _addQuery(q, query);
+    return q;
+  }
+
   static Future<QuerySnapshot> getFirestoreDocuments(String collectionName, {Map<String, Map<String, dynamic>> query}) async{
     Query q = Firestore.instance
         .collection(collectionName);
