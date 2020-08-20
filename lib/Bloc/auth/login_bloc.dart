@@ -21,8 +21,12 @@ class LoginBloc {
   }
 
   // Sementara pakai ini
-  void login(List<String> creds) async{
-    await this.helper.signIn(creds);
+  void login(List<String> creds) async {
+    try {
+      await this.helper.signIn(creds);
+    } on Exception catch (ex) {
+      print(ex);
+    }
   }
 
   void dispose() {

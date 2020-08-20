@@ -1,35 +1,30 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-Widget background(Widget child){
+Widget background(Widget child, {AppBar appBar}) {
   return Scaffold(
-    backgroundColor: Colors.white,
-    body: Stack(
-      alignment: Alignment.center,
-      children: [
-        Positioned(
-          top: -500,
-          left: -300,
-          child: bigCircle(Colors.greenAccent[100]),
-        ),
-        Positioned(
-          bottom: -500,
-          right: -300,
-          child: bigCircle(Colors.greenAccent[100]),
-        ),
-        Positioned.fill(
-          child: Center(
-            child: SingleChildScrollView(
-              child: child
-            )
-          )
-        ),
-      ],
-    )
-  );
+      appBar: appBar,
+      backgroundColor: Colors.white,
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          Positioned(
+            top: -500,
+            left: -300,
+            child: bigCircle(Colors.greenAccent[100]),
+          ),
+          Positioned(
+            bottom: -500,
+            right: -300,
+            child: bigCircle(Colors.greenAccent[100]),
+          ),
+          Positioned.fill(
+              child: Center(child: SingleChildScrollView(child: child))),
+        ],
+      ));
 }
 
-Widget bigCircle(Color color){
+Widget bigCircle(Color color) {
   return new Container(
     width: 800.0,
     height: 750.0,

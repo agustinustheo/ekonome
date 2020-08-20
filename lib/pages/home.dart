@@ -1,5 +1,10 @@
+import 'package:EkonoMe/models/ChartItemModel.dart';
+import 'package:EkonoMe/pages/functionality/add_expanse.dart';
+import 'package:EkonoMe/pages/functionality/add_fund.dart';
+import 'package:EkonoMe/widgets/appbar_widget.dart';
 import 'package:EkonoMe/widgets/background_widget.dart';
 import 'package:EkonoMe/widgets/button_widget.dart';
+import 'package:EkonoMe/widgets/chart_bar_widget.dart';
 import 'package:EkonoMe/widgets/container_widget.dart';
 import 'package:EkonoMe/widgets/dropdown_widget.dart';
 import 'package:EkonoMe/widgets/textfield_widget.dart';
@@ -16,11 +21,38 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final Map<int, String> dropDownValues = {
-    0: "Investment",
-    1: "Saving",
-    2: "Everyday Living",
-  };
+  List<ChartItemModel> charsData = [
+    ChartItemModel(0.5, "Investment", "Rp. 0/120.000"),
+    ChartItemModel(0.3, "Debt", "Rp. 0/120.000"),
+    ChartItemModel(0.2, "Angsuran", "Rp. 0/120.000")
+  ];
+
+  Widget _buildChart() {
+    return Column(
+      children: <Widget>[
+        SizedBox(
+          height: 15,
+        ),
+        Divider(
+          height: 20,
+          thickness: 2,
+        ),
+        ...this.charsData.map((e) {
+          return ChartBar(e);
+        }),
+        SizedBox(
+          height: 20,
+        ),
+        Divider(
+          height: 20,
+          thickness: 2,
+        ),
+        SizedBox(
+          height: 10,
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,50 +79,26 @@ class _HomePageState extends State<HomePage> {
             Text(
               "Budgeting Rules\n10% Invest\n10% Debt\n50% Everyday Living expenses\n25% Wants, and the remaining 5% on Saving",
             ),
-            SizedBox(
-              height: 20,
-            ),
-            Divider(
-              height: 10,
-              thickness: 2,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Center(
-              child: subtitle(
-                "Start Saving",
-              ),
-            ),
-            SizedBox(
-              height: 25,
-            ),
-            textField(
-              "Amount of money",
-              prefixIcon: Icon(Icons.account_balance_wallet),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            this._buildChart(),
+            Column(
               children: <Widget>[
-                Flexible(
-                  flex: 2,
-                  child: DropDownList(this.dropDownValues),
+                fullButton(() {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => AddFundPage()));
+                }, text: "Add Funds"),
+                SizedBox(
+                  height: 10,
                 ),
-                Flexible(
-                  flex: 1,
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 10),
-                    child: fullButton(() {}, text: "Add"),
-                  ),
-                ),
+                fullButton(() {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => AddExpansePage()));
+                }, text: "Add Expenses")
               ],
             ),
           ],
         ),
       ),
+      appBar: EkonomeAppBar("EkonoMe").getAppBar(),
     );
   }
 }

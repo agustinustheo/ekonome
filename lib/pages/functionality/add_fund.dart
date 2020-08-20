@@ -1,3 +1,4 @@
+import 'package:EkonoMe/widgets/appbar_widget.dart';
 import 'package:EkonoMe/widgets/background_widget.dart';
 import 'package:EkonoMe/widgets/button_widget.dart';
 import 'package:EkonoMe/widgets/container_widget.dart';
@@ -107,6 +108,7 @@ class _AddFundPageState extends State<AddFundPage> {
           ],
         ),
       ),
+      appBar: EkonomeAppBar("Add Funds").getAppBar(),
     );
   }
 }

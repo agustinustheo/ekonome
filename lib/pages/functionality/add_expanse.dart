@@ -1,3 +1,4 @@
+import 'package:EkonoMe/widgets/appbar_widget.dart';
 import 'package:EkonoMe/widgets/background_widget.dart';
 import 'package:EkonoMe/widgets/button_widget.dart';
 import 'package:EkonoMe/widgets/container_widget.dart';
@@ -82,6 +83,7 @@ class _AddExpansePageState extends State<AddExpansePage> {
           ],
         ),
       ),
+      appBar: EkonomeAppBar("Add Expenses").getAppBar(),
     );
   }
 }
