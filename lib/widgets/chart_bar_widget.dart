@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:EkonoMe/models/ChartItemModel.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_animations/simple_animations.dart';
@@ -14,22 +12,24 @@ class ChartBar extends StatefulWidget {
 }
 
 class _ChartBarState extends State<ChartBar> {
-  int selectedIndex = -1;
-  Random random = new Random();
+  Color selectedColor;
 
-  List<Color> colors = [
-    Colors.red,
-    Colors.green,
-    Colors.orange,
-    Colors.amber,
-    Colors.pink,
-    Colors.purple[300]
-  ];
+  Color defineColor() {
+    Color resultColor;
+    if (this.widget.item.percentage >= 0.51) {
+      resultColor = Color.fromRGBO(
+          (255 - (255 * this.widget.item.percentage)).toInt(), 255, 0, 1);
+    } else {
+      resultColor = Color.fromRGBO(
+          255, (255 - (255 * (1 - this.widget.item.percentage)).toInt()), 0, 1);
+    }
+    return resultColor;
+  }
 
   @override
   void initState() {
     super.initState();
-    this.selectedIndex = random.nextInt(5);
+    this.selectedColor = this.defineColor();
   }
 
   @override
@@ -68,7 +68,7 @@ class _ChartBarState extends State<ChartBar> {
                   color: Colors.white,
                   border: Border.all(
                     width: 1,
-                    color: this.colors[this.selectedIndex],
+                    color: this.selectedColor,
                   ),
                   borderRadius: new BorderRadius.circular(15.0),
                 ),
@@ -76,13 +76,11 @@ class _ChartBarState extends State<ChartBar> {
                   children: <Widget>[
                     Container(
                       decoration: BoxDecoration(
-                        color: this.colors[this.selectedIndex],
+                        color: this.selectedColor,
                         borderRadius: BorderRadius.circular(12.0),
                       ),
-                      width: (this.widget.item.percentage >= 0.9
-                              ? this.widget.item.percentage - 0.05
-                              : this.widget.item.percentage) *
-                          MediaQuery.of(context).size.width,
+                      width: this.widget.item.percentage *
+                          (MediaQuery.of(context).size.width - 99),
                     ),
                   ],
                 ),

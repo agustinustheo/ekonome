@@ -20,35 +20,40 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<ChartItemModel> charsData = [
-    ChartItemModel(0.5, "Investment", "Rp. 0/120.000"),
-    ChartItemModel(0.3, "Debt", "Rp. 0/120.000"),
-    ChartItemModel(0.2, "Angsuran", "Rp. 0/120.000")
+    ChartItemModel(0.0, "Investment", "Rp. 0/120.000"),
+    ChartItemModel(0.1, "Debt", "Rp. 0/120.000"),
+    ChartItemModel(0.2, "Angsuran", "Rp. 0/120.000"),
+    ChartItemModel(0.3, "Beli Kerupuk", "Rp. 0/120.000"),
+    ChartItemModel(0.4, "Makan Alpukat Bersama", "Rp. 0/120.000"),
+    ChartItemModel(0.5, "Beli Gelas", "Rp. 0/120.000"),
+    ChartItemModel(0.6, "Sewa Kamar", "Rp. 0/120.000"),
+    ChartItemModel(0.7, "Beli Dompet", "Rp. 0/120.000"),
+    ChartItemModel(0.8, "Jual Motor", "Rp. 0/120.000"),
+    ChartItemModel(0.9, "Hambur hamburin", "Rp. 0/120.000"),
+    ChartItemModel(1.0, "Pesta", "Rp. 0/120.000")
   ];
 
-  Widget _buildChart() {
-    return Column(
-      children: <Widget>[
-        SizedBox(
-          height: 15,
+  Widget _buildContainer(Widget child) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.green.withOpacity(0.1),
+            spreadRadius: 5,
+            blurRadius: 10,
+            offset: Offset(0, 3), // changes position of shadow
+          ),
+        ],
+        border: Border.all(
+          width: .5,
+          color: Colors.green,
         ),
-        Divider(
-          height: 20,
-          thickness: 2,
-        ),
-        ...this.charsData.map((e) {
-          return ChartBar(e);
-        }),
-        SizedBox(
-          height: 20,
-        ),
-        Divider(
-          height: 20,
-          thickness: 2,
-        ),
-        SizedBox(
-          height: 10,
-        ),
-      ],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      height: 215,
+      width: double.infinity,
+      child: child,
     );
   }
 
@@ -75,7 +80,19 @@ class _HomePageState extends State<HomePage> {
             smallTitle(
               "Budgeting Rules\n10% Invest\n10% Debt\n50% Everyday Living expenses\n25% Wants, and the remaining 5% on Saving",
             ),
-            this._buildChart(),
+            SizedBox(
+              height: 20,
+            ),
+            this._buildContainer(
+              ListView.builder(
+                itemBuilder: (context, index) =>
+                    ChartBar(this.charsData[index]),
+                itemCount: this.charsData.length,
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
             Column(
               children: <Widget>[
                 fullButton(() {

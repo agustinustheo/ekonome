@@ -3,7 +3,7 @@ import 'package:EkonoMe/helpers/navigator_helper.dart';
 import 'package:EkonoMe/helpers/session_helper.dart';
 import 'package:EkonoMe/pages/auth/register.dart';
 import 'package:EkonoMe/Bloc/auth/login_bloc.dart';
-import 'package:EkonoMe/pages/home.dart';
+import 'package:EkonoMe/pages/home/home.dart';
 import 'package:EkonoMe/widgets/alert_widget.dart';
 import 'package:EkonoMe/widgets/background_widget.dart';
 import 'package:EkonoMe/widgets/button_widget.dart';
