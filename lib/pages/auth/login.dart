@@ -35,10 +35,10 @@ class _LoginPageState extends State<LoginPage> {
           SizedBox(height: 10.0),
           subtitle('Enter your email and password'),
           SizedBox(height: 50.0),
-          textField("Enter email", prefixIcon: Icon(Icons.email)),
+          textField("Enter email", prefixIcon: Icon(Icons.email), onSaved: (input) => _email = input),
           SizedBox(height: 20.0),
           textField("Enter password",
-              isPassword: true, prefixIcon: Icon(Icons.lock)),
+              isPassword: true, prefixIcon: Icon(Icons.lock), onSaved: (input) => _password = input),
           SizedBox(height: 30.0),
           textLink("Don't have an account? Register here",
               () => NavigatorHelper.pushReplacement(context, RegisterPage())),
@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
         this._credentials.add(_email);
         this._credentials.add(_password);
         this.loginBloc.credentials.add(_credentials);
-        this.loginBloc.login(_credentials);
+        await this.loginBloc.login(this._credentials);
 
         // Go to login page
         NavigatorHelper.pushReplacement(context, HomePage());

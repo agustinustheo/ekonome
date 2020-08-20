@@ -21,11 +21,11 @@ class LoginBloc {
   }
 
   // Sementara pakai ini
-  void login(List<String> creds) async {
+  Future<void> login(List<String> creds) async {
     try {
       await this.helper.signIn(creds);
-    } on Exception catch (ex) {
-      print(ex);
+    } catch (ex) {
+      throw ex;
     }
   }
 
