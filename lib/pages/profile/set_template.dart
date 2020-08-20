@@ -21,7 +21,7 @@ class _SetTemplatePageState extends State<SetTemplatePage> {
   // Set initial state
   _SetTemplatePageState() {
     SessionHelper.getUserLogin().then((authUid) => {
-          FirestoreHelper.getFirestoreDocuments("templates", {
+          FirestoreHelper.getFirestoreDocuments("templates", query: {
             "=": {"auth_uid": authUid}
           }).then((value) {
             _titleList = value.documents.map<List<String>>((doc) {

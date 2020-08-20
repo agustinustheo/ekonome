@@ -19,7 +19,10 @@ Widget background(Widget child, {AppBar appBar}) {
             child: bigCircle(Colors.greenAccent[100]),
           ),
           Positioned.fill(
-              child: Center(child: SingleChildScrollView(child: child))),
+            child: Container(
+              child: Center(child: SingleChildScrollView(child: child)),
+            ),
+          ),
         ],
       ));
 }

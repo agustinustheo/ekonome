@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-Widget container(Widget child){
+Widget container(Widget child) {
   return Column(
     mainAxisSize: MainAxisSize.max,
     mainAxisAlignment: MainAxisAlignment.center,
@@ -16,10 +16,9 @@ Widget container(Widget child){
           borderRadius: new BorderRadius.circular(25.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 15,
-              blurRadius: 17,
-              offset: Offset(0, 3), // changes position of shadow
+              color: Colors.black.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 8
             ),
           ]
         ),
