@@ -1,5 +1,6 @@
 import 'package:EkonoMe/helpers/auth_helper.dart';
 import 'package:EkonoMe/helpers/navigator_helper.dart';
+import 'package:EkonoMe/helpers/session_helper.dart';
 import 'package:EkonoMe/pages/auth/register.dart';
 import 'package:EkonoMe/Bloc/auth/login_bloc.dart';
 import 'package:EkonoMe/pages/home.dart';
@@ -25,6 +26,10 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final loginBloc = LoginBloc(AuthHelper());
+
+  _LoginPageState(){
+    SessionHelper.checkSession().then((value) => NavigatorHelper.pushReplacement(context, HomePage()));
+  }
 
   @override
   Widget build(BuildContext context) {

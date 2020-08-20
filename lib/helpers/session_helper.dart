@@ -11,6 +11,11 @@ class SessionHelper{
     return prefs.setString("user", user.uid);
   }
 
+  static Future<bool> checkSession() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.containsKey("user");
+  }
+
   static Future<String> getUserLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString("user");
@@ -25,7 +30,7 @@ class SessionHelper{
     QuerySnapshot data = await FirestoreHelper
     .getFirestoreDocuments(
       "users", 
-      {
+      query: {
         "=": 
         {
           "auth_uid": authUid
@@ -39,7 +44,7 @@ class SessionHelper{
     QuerySnapshot data = await FirestoreHelper
     .getFirestoreDocuments(
       "users", 
-      {
+      query: {
         "=": 
         {
           "username": username
