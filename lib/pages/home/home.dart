@@ -19,12 +19,17 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<ChartItemModel> charsData = [
-    ChartItemModel(0.5, "Investment", "Rp. 0/120.000"),
-    ChartItemModel(0.3, "Debt", "Rp. 0/120.000"),
+    ChartItemModel(0.0, "Investment", "Rp. 0/120.000"),
+    ChartItemModel(0.1, "Debt", "Rp. 0/120.000"),
     ChartItemModel(0.2, "Angsuran", "Rp. 0/120.000"),
-    ChartItemModel(0.5, "Investment", "Rp. 0/120.000"),
-    ChartItemModel(0.3, "Debt", "Rp. 0/120.000"),
-    ChartItemModel(0.2, "Angsuran", "Rp. 0/120.000")
+    ChartItemModel(0.3, "Beli Kerupuk", "Rp. 0/120.000"),
+    ChartItemModel(0.4, "Makan Alpukat Bersama", "Rp. 0/120.000"),
+    ChartItemModel(0.5, "Beli Gelas", "Rp. 0/120.000"),
+    ChartItemModel(0.6, "Sewa Kamar", "Rp. 0/120.000"),
+    ChartItemModel(0.7, "Beli Dompet", "Rp. 0/120.000"),
+    ChartItemModel(0.8, "Jual Motor", "Rp. 0/120.000"),
+    ChartItemModel(0.9, "Hambur hamburin", "Rp. 0/120.000"),
+    ChartItemModel(1.0, "Pesta", "Rp. 0/120.000")
   ];
 
   Widget _buildContainer(Widget child) {
