@@ -9,7 +9,7 @@ class FirestoreHelper{
     for(var type in data.entries){
       if(type.key == "="){
         for(var item in type.value.entries){
-          q.where(item.key, isEqualTo: item.value);
+          q = q.where(item.key, isEqualTo: item.value);
         }
       }
     }

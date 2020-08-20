@@ -23,7 +23,11 @@ class RegisterBloc {
 
   // Sementara pakai ini
   void register(List<String> creds) async{
-    await this.helper.signUp(creds);
+    try {
+      await this.helper.signUp(creds);
+    } catch (ex) {
+      throw ex;
+    }
   }
 
   void dispose() {

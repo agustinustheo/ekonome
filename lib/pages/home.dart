@@ -6,8 +6,6 @@ import 'package:EkonoMe/widgets/background_widget.dart';
 import 'package:EkonoMe/widgets/button_widget.dart';
 import 'package:EkonoMe/widgets/chart_bar_widget.dart';
 import 'package:EkonoMe/widgets/container_widget.dart';
-import 'package:EkonoMe/widgets/dropdown_widget.dart';
-import 'package:EkonoMe/widgets/textfield_widget.dart';
 import 'package:EkonoMe/widgets/title_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -62,21 +60,19 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            Text(
-              "Hello Timotius",
-              style: TextStyle(fontSize: 25),
+            title(
+              "Hello Timotius"
             ),
             SizedBox(
               height: 15,
             ),
-            Text(
-              "Your balance: Rp. 1.450.000 (Saving)",
-              style: TextStyle(fontSize: 16),
+            subtitle(
+              "Your balance: Rp. 1.450.000 (Saving)"
             ),
             SizedBox(
               height: 15,
             ),
-            Text(
+            smallTitle(
               "Budgeting Rules\n10% Invest\n10% Debt\n50% Everyday Living expenses\n25% Wants, and the remaining 5% on Saving",
             ),
             this._buildChart(),
