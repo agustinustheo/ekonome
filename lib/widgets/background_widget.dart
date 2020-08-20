@@ -20,8 +20,7 @@ Widget background(Widget child, {AppBar appBar}) {
           ),
           Positioned.fill(
             child: Container(
-              margin: const EdgeInsets.only(bottom: 50),
-              child: Center(child: child),
+              child: Center(child: SingleChildScrollView(child: child)),
             ),
           ),
         ],
