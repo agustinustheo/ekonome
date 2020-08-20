@@ -6,9 +6,6 @@ import 'package:EkonoMe/widgets/background_widget.dart';
 import 'package:EkonoMe/widgets/button_widget.dart';
 import 'package:EkonoMe/widgets/chart_bar_widget.dart';
 import 'package:EkonoMe/widgets/container_widget.dart';
-import 'package:EkonoMe/widgets/dropdown_widget.dart';
-import 'package:EkonoMe/widgets/textfield_widget.dart';
-import 'package:EkonoMe/widgets/title_widget.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -24,33 +21,33 @@ class _HomePageState extends State<HomePage> {
   List<ChartItemModel> charsData = [
     ChartItemModel(0.5, "Investment", "Rp. 0/120.000"),
     ChartItemModel(0.3, "Debt", "Rp. 0/120.000"),
+    ChartItemModel(0.2, "Angsuran", "Rp. 0/120.000"),
+    ChartItemModel(0.5, "Investment", "Rp. 0/120.000"),
+    ChartItemModel(0.3, "Debt", "Rp. 0/120.000"),
     ChartItemModel(0.2, "Angsuran", "Rp. 0/120.000")
   ];
 
-  Widget _buildChart() {
-    return Column(
-      children: <Widget>[
-        SizedBox(
-          height: 15,
+  Widget _buildContainer(Widget child) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.green.withOpacity(0.1),
+            spreadRadius: 5,
+            blurRadius: 10,
+            offset: Offset(0, 3), // changes position of shadow
+          ),
+        ],
+        border: Border.all(
+          width: .5,
+          color: Colors.green,
         ),
-        Divider(
-          height: 20,
-          thickness: 2,
-        ),
-        ...this.charsData.map((e) {
-          return ChartBar(e);
-        }),
-        SizedBox(
-          height: 20,
-        ),
-        Divider(
-          height: 20,
-          thickness: 2,
-        ),
-        SizedBox(
-          height: 10,
-        ),
-      ],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      height: 215,
+      width: double.infinity,
+      child: child,
     );
   }
 
@@ -79,7 +76,19 @@ class _HomePageState extends State<HomePage> {
             Text(
               "Budgeting Rules\n10% Invest\n10% Debt\n50% Everyday Living expenses\n25% Wants, and the remaining 5% on Saving",
             ),
-            this._buildChart(),
+            SizedBox(
+              height: 20,
+            ),
+            this._buildContainer(
+              ListView.builder(
+                itemBuilder: (context, index) =>
+                    ChartBar(this.charsData[index]),
+                itemCount: this.charsData.length,
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
             Column(
               children: <Widget>[
                 fullButton(() {
