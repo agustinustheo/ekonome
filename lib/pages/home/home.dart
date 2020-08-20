@@ -38,7 +38,9 @@ class _HomePageState extends State<HomePage> {
 
   _HomePageState() {
     SessionHelper.getUserLogin().then((value) async{
-      authUid = value;
+      setState(() {
+        authUid = value;
+      });
     });
   }
 
