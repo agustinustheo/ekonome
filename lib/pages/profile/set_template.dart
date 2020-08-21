@@ -1,11 +1,14 @@
 import 'package:EkonoMe/helpers/firestore_helper.dart';
+import 'package:EkonoMe/helpers/navigator_helper.dart';
 import 'package:EkonoMe/helpers/session_helper.dart';
+import 'package:EkonoMe/pages/home/home.dart';
 import 'package:EkonoMe/widgets/background_widget.dart';
 import 'package:EkonoMe/widgets/button_widget.dart';
 import 'package:EkonoMe/widgets/container_widget.dart';
 import 'package:EkonoMe/widgets/moneytemplate_widget.dart';
 import 'package:EkonoMe/widgets/title_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class SetTemplatePage extends StatefulWidget {
   @override
@@ -82,5 +85,22 @@ class _SetTemplatePageState extends State<SetTemplatePage> {
       "titles": _titleList,
       "percentages": _percentageList
     });
+
+    Alert(
+      context: context,
+      type: AlertType.success,
+      title: "Succesful",
+      desc: "Succesfully create template!",
+      buttons: [
+        DialogButton(
+          child: Text(
+            "OK",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () => NavigatorHelper.pushReplacement(context, HomePage()),
+          width: 120,
+        )
+      ],
+    );
   }
 }

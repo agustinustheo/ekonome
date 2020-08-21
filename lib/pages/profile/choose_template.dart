@@ -1,4 +1,5 @@
 import 'package:EkonoMe/helpers/navigator_helper.dart';
+import 'package:EkonoMe/pages/home/home.dart';
 import 'package:EkonoMe/pages/profile/set_template.dart';
 import 'package:EkonoMe/widgets/background_widget.dart';
 import 'package:EkonoMe/widgets/button_widget.dart';
@@ -33,15 +34,10 @@ class _ChooseTemplatePageState extends State<ChooseTemplatePage> {
               Center(child: subtitle('Choose or create your template')),
               SizedBox(height: 30.0),
               Row(
-                  children: <Widget>[
-                    Flexible(
-                      flex: 6,
-                      child : 
-                        CheckboxList(checkboxValue)
-                    ),
-                  
-                  ],
-                ),
+                children: <Widget>[
+                  Flexible(flex: 6, child: CheckboxList(checkboxValue)),
+                ],
+              ),
               SizedBox(height: 40.0),
               fullButton(
                   () => NavigatorHelper.pushReplacement(
@@ -52,9 +48,12 @@ class _ChooseTemplatePageState extends State<ChooseTemplatePage> {
                   "or",
                 ),
               ),
-              fullButton(() => selectTemplate(), text: "Finsih")
+              fullButton(() => selectTemplate(), text: "Finish")
             ]))));
   }
 
-  void selectTemplate() {}
+  void selectTemplate() {
+    //....some logic
+    NavigatorHelper.pushReplacement(context, HomePage());
+  }
 }

@@ -1,3 +1,5 @@
+import 'package:EkonoMe/helpers/navigator_helper.dart';
+import 'package:EkonoMe/pages/profile/choose_template.dart';
 import 'package:EkonoMe/widgets/background_widget.dart';
 import 'package:EkonoMe/widgets/button_widget.dart';
 import 'package:EkonoMe/widgets/container_widget.dart';
@@ -7,6 +9,7 @@ import 'package:EkonoMe/widgets/alert_widget.dart';
 import 'package:EkonoMe/helpers/firestore_helper.dart';
 import 'package:EkonoMe/helpers/session_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -26,13 +29,14 @@ class _ProfilePageState extends State<ProfilePage> {
 
   // Set initial state
   _ProfilePageState() {
-    _dateTimeController.text = _selectedDate == null ? "" : "${_selectedDate.toLocal()}".split(' ')[0];
+    _dateTimeController.text =
+        _selectedDate == null ? "" : "${_selectedDate.toLocal()}".split(' ')[0];
   }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
-        initialDate: _selectedDate??DateTime.now(),
+        initialDate: _selectedDate ?? DateTime.now(),
         firstDate: DateTime(2015, 8),
         lastDate: DateTime(2101));
     if (picked != null && picked != _selectedDate)
@@ -44,49 +48,36 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return background(
-      container(
-        Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              title('Profile'),
-              SizedBox(height: 10.0),
-              subtitle('Create your template'),
-              SizedBox(height: 50.0),
-              textField(
-                "Enter fullname",
-                prefixIcon: Icon(Icons.person),
-                onSaved: (input) => _fullName = input
-              ),
-              SizedBox(height: 20.0),
-              textField(
-                "Amount of money",
-                prefixIcon: Icon(Icons.attach_money),
-                onSaved: (input) => _money = int.parse(input)
-              ),
-              SizedBox(height: 20.0),
-              textField(
-                "Reset date",
-                prefixIcon: Icon(Icons.calendar_today),
-                onTap: () => _selectDate(context),
-                readOnly: true,
-                controller: _dateTimeController
-              ),
-              SizedBox(height: 40.0),
-              fullButton(() => saveProfile(), text: "Next"),
-            ]
-          )
-        )
-      )
-    );
+    return background(container(Form(
+        key: _formKey,
+        child: Column(children: [
+          title('Profile'),
+          SizedBox(height: 10.0),
+          subtitle('Create your template'),
+          SizedBox(height: 50.0),
+          textField("Enter fullname",
+              prefixIcon: Icon(Icons.person),
+              onSaved: (input) => _fullName = input),
+          SizedBox(height: 20.0),
+          textField("Amount of money",
+              prefixIcon: Icon(Icons.attach_money),
+              onSaved: (input) => _money = int.parse(input)),
+          SizedBox(height: 20.0),
+          textField("Reset date",
+              prefixIcon: Icon(Icons.calendar_today),
+              onTap: () => _selectDate(context),
+              readOnly: true,
+              controller: _dateTimeController),
+          SizedBox(height: 40.0),
+          fullButton(() => saveProfile(), text: "Next"),
+        ]))));
   }
 
-  Future<void> saveProfile() async{
+  Future<void> saveProfile() async {
     final formState = _formKey.currentState;
-    if(formState.validate()){
+    if (formState.validate()) {
       formState.save();
-      try{
+      try {
         // Save data
         FirestoreHelper.insertToFirestore("profile", {
           "auth_uid": await SessionHelper.getUserLogin(),
@@ -94,8 +85,25 @@ class _ProfilePageState extends State<ProfilePage> {
           "money": _money,
           "datetime": _selectedDate
         });
-      }
-      catch(insertError){
+
+        Alert(
+          context: context,
+          type: AlertType.success,
+          title: "Succesful",
+          desc: "Succesfully save profile!",
+          buttons: [
+            DialogButton(
+              child: Text(
+                "OK",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+              onPressed: () => NavigatorHelper.pushReplacement(
+                  context, ChooseTemplatePage()),
+              width: 120,
+            )
+          ],
+        );
+      } catch (insertError) {
         alertError(context, "An exception occured");
       }
     }
