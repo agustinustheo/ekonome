@@ -9,7 +9,6 @@ import 'package:EkonoMe/widgets/alert_widget.dart';
 import 'package:EkonoMe/helpers/firestore_helper.dart';
 import 'package:EkonoMe/helpers/session_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -23,6 +22,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String _fullName;
   int _money;
   DateTime _selectedDate;
+  String _authUid;
 
   // Initialize controller
   var _dateTimeController = TextEditingController();
@@ -31,6 +31,11 @@ class _ProfilePageState extends State<ProfilePage> {
   _ProfilePageState() {
     _dateTimeController.text =
         _selectedDate == null ? "" : "${_selectedDate.toLocal()}".split(' ')[0];
+    
+    SessionHelper.getTemp().then((value) => {
+      this._authUid = value,
+      FirestoreHelper.firestoreIfExists("profile", {"=": {"auth_uid": value}}).then((x){ if(x) NavigatorHelper.pushReplacement(context, ChooseTemplatePage(), "ChooseTemplate"); })
+    });
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -73,36 +78,20 @@ class _ProfilePageState extends State<ProfilePage> {
         ]))));
   }
 
-  Future<void> saveProfile() async {
+  void saveProfile() {
     final formState = _formKey.currentState;
     if (formState.validate()) {
       formState.save();
       try {
         // Save data
         FirestoreHelper.insertToFirestore("profile", {
-          "auth_uid": await SessionHelper.getUserLogin(),
+          "auth_uid": this._authUid,
           "fullname": _fullName,
           "money": _money,
           "datetime": _selectedDate
         });
 
-        Alert(
-          context: context,
-          type: AlertType.success,
-          title: "Succesful",
-          desc: "Succesfully save profile!",
-          buttons: [
-            DialogButton(
-              child: Text(
-                "OK",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-              onPressed: () => NavigatorHelper.pushReplacement(
-                  context, ChooseTemplatePage()),
-              width: 120,
-            )
-          ],
-        );
+        alertSuccess(context, "Succesfully save profile!", function: () => NavigatorHelper.pushReplacement(context, ChooseTemplatePage(), "ChooseTemplate"));
       } catch (insertError) {
         alertError(context, "An exception occured");
       }
