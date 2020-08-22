@@ -43,7 +43,7 @@ class _AddFundPageState extends State<AddFundPage> {
       setState(() {
         var data = q.documents[0]['titles'];
         percentages = q.documents[0]["percentages"];
-        currMoney = q.documents[0]["funds"];
+        currMoney = q.documents[0]["targets"];
         _id = q.documents[0].documentID;
 
         dropDownValues = new Map<int, String>();
@@ -105,8 +105,9 @@ class _AddFundPageState extends State<AddFundPage> {
     if (formState.validate()) {
       formState.save();
       try {
-        for(int i = 0; i < percentages.length; i++) currMoney[i] += (percentages[i] * _money / 100);
-        FirestoreHelper.updateFirestore("templates", _id, {"funds": currMoney});
+        int _maxPercentage = percentages.reduce((a, b) => a + b);
+        for(int i = 0; i < percentages.length; i++) currMoney[i] += (percentages[i] * _money / _maxPercentage);
+        FirestoreHelper.updateFirestore("templates", _id, {"targets": currMoney});
         formState.reset();
       } catch (ex) {
         alertError(context, "An exception occured");
@@ -138,7 +139,7 @@ class _AddFundPageState extends State<AddFundPage> {
       try {
         currMoney[index] += _money;
 
-        FirestoreHelper.updateFirestore("templates", _id, {"funds": currMoney});
+        FirestoreHelper.updateFirestore("templates", _id, {"targets": currMoney});
         formState.reset();
       } catch (ex) {
         alertError(context, "An exception occured");
