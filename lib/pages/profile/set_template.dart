@@ -1,7 +1,8 @@
 import 'package:EkonoMe/helpers/firestore_helper.dart';
 import 'package:EkonoMe/helpers/navigator_helper.dart';
 import 'package:EkonoMe/helpers/session_helper.dart';
-import 'package:EkonoMe/pages/home/home.dart';
+import 'package:EkonoMe/pages/auth/login.dart';
+import 'package:EkonoMe/widgets/alert_widget.dart';
 import 'package:EkonoMe/widgets/background_widget.dart';
 import 'package:EkonoMe/widgets/button_widget.dart';
 import 'package:EkonoMe/widgets/container_widget.dart';
@@ -20,29 +21,31 @@ class _SetTemplatePageState extends State<SetTemplatePage> {
   List<Widget> _moneyTemplates = new List<Widget>();
   List<String> _titleList = new List<String>();
   List<int> _percentageList = new List<int>();
+  String _authUid = "";
 
   // Set initial state
   _SetTemplatePageState() {
-    SessionHelper.getUserLogin().then((authUid) => {
-          FirestoreHelper.getFirestoreDocuments("templates", query: {
-            "=": {"auth_uid": authUid}
-          }).then((value) {
-            _titleList = value.documents.map<List<String>>((doc) {
-              return List<String>.from(doc['titles']);
-            }).first;
+    SessionHelper.getTemp().then((authUid) => {
+      this._authUid = authUid,
+      FirestoreHelper.getFirestoreDocuments("templates", query: {
+        "=": {"auth_uid": authUid}
+      }).then((value) {
+        _titleList = value.documents.map<List<String>>((doc) {
+          return List<String>.from(doc['titles']);
+        }).first;
 
-            _percentageList = value.documents.map<List<int>>((doc) {
-              return List<int>.from(doc['percentages']);
-            }).first;
+        _percentageList = value.documents.map<List<int>>((doc) {
+          return List<int>.from(doc['percentages']);
+        }).first;
 
-            setState(() {
-              for (int i = 0; i < _titleList.length; i++) {
-                _moneyTemplates.add(moneyTemplate(
-                    _titleList[i], _percentageList[i], removeMoneyTemplate));
-              }
-            });
-          })
+        setState(() {
+          for (int i = 0; i < _titleList.length; i++) {
+            _moneyTemplates.add(moneyTemplate(
+                _titleList[i], _percentageList[i], removeMoneyTemplate));
+          }
         });
+      })
+    });
   }
 
   @override
@@ -56,7 +59,7 @@ class _SetTemplatePageState extends State<SetTemplatePage> {
           ? Column(children: _moneyTemplates)
           : SizedBox(),
       addMoneyTemplate(addNewMoneyTemplate),
-      fullButton(() => saveTemplate(), text: "Save")
+      fullButton(() => saveTemplate(), text: "Finish")
     ])));
   }
 
@@ -80,27 +83,21 @@ class _SetTemplatePageState extends State<SetTemplatePage> {
   }
 
   void saveTemplate() async {
-    FirestoreHelper.insertToFirestore("templates", {
-      "auth_uid": await SessionHelper.getUserLogin(),
-      "titles": _titleList,
-      "percentages": _percentageList
-    });
+    int percentages = 0;
+    for(var x in _percentageList) percentages += x;
+    if(percentages <= 99 && percentages > 0){
+      alertInfo(context, "Your savings would be " + (100-percentages).toString() + "% of your income.\nPress OK to save and continue", function: (){
+        FirestoreHelper.insertToFirestore("templates", {
+          "auth_uid": _authUid,
+          "titles": _titleList,
+          "percentages": _percentageList,
+          "funds": [0],
+          "targets": [0]
+        });
 
-    Alert(
-      context: context,
-      type: AlertType.success,
-      title: "Succesful",
-      desc: "Succesfully create template!",
-      buttons: [
-        DialogButton(
-          child: Text(
-            "OK",
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-          onPressed: () => NavigatorHelper.pushReplacement(context, HomePage()),
-          width: 120,
-        )
-      ],
-    );
+        alertSuccess(context, "Succesfully create template!", function:() => NavigatorHelper.pushReplacement(context, LoginPage(), "Login"));
+      });
+    }
+    else if(percentages == 0) alertError(context, "Must add template!");
   }
 }
