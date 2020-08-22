@@ -56,7 +56,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ValidatorHelper.isPasswordMatch(_password, input)),
           SizedBox(height: 30.0),
           textLink("Have an account? Login here",
-              () => NavigatorHelper.pushReplacement(context, LoginPage())),
+              () => NavigatorHelper.pushReplacement(context, LoginPage(), "Login")),
           SizedBox(height: 30.0),
           fullButton(() => signUp(), text: "Register"),
         ]))));
@@ -75,7 +75,7 @@ class _RegisterPageState extends State<RegisterPage> {
         this.registerBloc.register(_credentials);
 
         // Go to profile page
-        NavigatorHelper.pushReplacement(context, ProfilePage());
+        NavigatorHelper.pushReplacement(context, ProfilePage(), "Profile");
       } catch (signUpError) {
         if (signUpError is String) {
           alertError(context, signUpError);
