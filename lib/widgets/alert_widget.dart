@@ -4,10 +4,10 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 
 import 'package:EkonoMe/helpers/navigator_helper.dart';
 
-void alertSuccess(BuildContext context, String message){
+void alertSuccess(BuildContext context, String message, {Function function}){
   Alert(
     context: context,
-    type: AlertType.error,
+    type: AlertType.success,
     title: "Success",
     desc: message,
     buttons: [
@@ -16,14 +16,14 @@ void alertSuccess(BuildContext context, String message){
           "OK",
           style: TextStyle(color: Colors.white, fontSize: 20),
         ),
-        onPressed: () => NavigatorHelper.pop(context),
+        onPressed: function??() => NavigatorHelper.pop(context),
         width: 120,
       )
     ],
   ).show();
 }
 
-void alertError(BuildContext context, String message){
+void alertError(BuildContext context, String message, {Function function}){
   Alert(
     context: context,
     type: AlertType.error,
@@ -35,7 +35,26 @@ void alertError(BuildContext context, String message){
           "OK",
           style: TextStyle(color: Colors.white, fontSize: 20),
         ),
-        onPressed: () => Navigator.pop(context),
+        onPressed: function??() => NavigatorHelper.pop(context),
+        width: 120,
+      )
+    ],
+  ).show();
+}
+
+void alertInfo(BuildContext context, String message, {Function function}){
+  Alert(
+    context: context,
+    type: AlertType.info,
+    title: "Info",
+    desc: message,
+    buttons: [
+      DialogButton(
+        child: Text(
+          "OK",
+          style: TextStyle(color: Colors.white, fontSize: 20),
+        ),
+        onPressed: function??() => NavigatorHelper.pop(context),
         width: 120,
       )
     ],
