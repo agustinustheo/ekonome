@@ -2,34 +2,21 @@ import 'package:EkonoMe/models/ChartItemModel.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_animations/simple_animations.dart';
 
-class ChartBar extends StatefulWidget {
+class ChartBar extends StatelessWidget {
   final ChartItemModel item;
 
   ChartBar(this.item);
 
-  @override
-  _ChartBarState createState() => _ChartBarState();
-}
-
-class _ChartBarState extends State<ChartBar> {
-  Color selectedColor;
-
   Color defineColor() {
     Color resultColor;
-    if (this.widget.item.percentage >= 0.51) {
+    if (this.item.percentage >= 0.51) {
       resultColor = Color.fromRGBO(
-          (255 - (255 * this.widget.item.percentage)).toInt(), 255, 0, 1);
+          (255 - (255 * this.item.percentage)).toInt(), 255, 0, 1);
     } else {
       resultColor = Color.fromRGBO(
-          255, (255 - (255 * (1 - this.widget.item.percentage)).toInt()), 0, 1);
+          255, (255 - (255 * (1 - this.item.percentage)).toInt()), 0, 1);
     }
     return resultColor;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    this.selectedColor = this.defineColor();
   }
 
   @override
@@ -38,7 +25,7 @@ class _ChartBarState extends State<ChartBar> {
       duration: Duration(
         milliseconds: 500,
       ),
-      tween: Tween(begin: 0.0, end: this.widget.item.percentage * 100),
+      tween: Tween(begin: 0.0, end: this.item.percentage * 100),
       builder: (context, child, value) {
         return Padding(
           padding: const EdgeInsets.all(8.0),
@@ -49,11 +36,11 @@ class _ChartBarState extends State<ChartBar> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    this.widget.item.label,
+                    item.label,
                     style: TextStyle(fontSize: 15),
                   ),
                   Text(
-                    this.widget.item.displayedAmount,
+                    item.displayedAmount,
                     style: TextStyle(fontSize: 12),
                   )
                 ],
@@ -68,7 +55,7 @@ class _ChartBarState extends State<ChartBar> {
                   color: Colors.white,
                   border: Border.all(
                     width: 1,
-                    color: this.selectedColor,
+                    color: defineColor(),
                   ),
                   borderRadius: new BorderRadius.circular(15.0),
                 ),
@@ -76,10 +63,10 @@ class _ChartBarState extends State<ChartBar> {
                   children: <Widget>[
                     Container(
                       decoration: BoxDecoration(
-                        color: this.selectedColor,
+                        color: defineColor(),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
-                      width: this.widget.item.percentage *
+                      width: this.item.percentage *
                           (MediaQuery.of(context).size.width - 99),
                     ),
                   ],
