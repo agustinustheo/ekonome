@@ -10,6 +10,10 @@ class SessionHelper{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setString("user", user.uid);
   }
+  static Future<bool> saveTemp(FirebaseUser user) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString("temp", user.uid);
+  }
 
   static Future<bool> checkSession() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -21,9 +25,17 @@ class SessionHelper{
     return prefs.getString("user");
   }
 
+  static Future<String> getTemp() async {
+    String userId = await getUserLogin();
+    if(userId != "") return userId;
+    
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString("temp");
+  }
+
   static Future<bool> removeUserLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString("user", "");
+    return prefs.remove("user");
   }
 
   static Future<DocumentSnapshot> getUserByAuthUID(String authUid) async {
