@@ -1,9 +1,11 @@
 import 'package:EkonoMe/helpers/auth_helper.dart';
+import 'package:EkonoMe/helpers/firestore_helper.dart';
 import 'package:EkonoMe/helpers/navigator_helper.dart';
 import 'package:EkonoMe/helpers/session_helper.dart';
 import 'package:EkonoMe/pages/auth/register.dart';
 import 'package:EkonoMe/Bloc/auth/login_bloc.dart';
 import 'package:EkonoMe/pages/home/home.dart';
+import 'package:EkonoMe/pages/profile/profile.dart';
 import 'package:EkonoMe/widgets/alert_widget.dart';
 import 'package:EkonoMe/widgets/background_widget.dart';
 import 'package:EkonoMe/widgets/button_widget.dart';
@@ -28,7 +30,13 @@ class _LoginPageState extends State<LoginPage> {
   final loginBloc = LoginBloc(AuthHelper());
 
   _LoginPageState(){
-    SessionHelper.checkSession().then((value) => NavigatorHelper.pushReplacement(context, HomePage()));
+    SessionHelper.getUserLogin().then((value){
+      if(value != null) NavigatorHelper.pushReplacement(context, HomePage(), "Home");
+      FirestoreHelper.firestoreIfExists("templates", {"=": {"auth_uid": value}})
+        .then((x){
+          if(!x) NavigatorHelper.pushReplacement(context, ProfilePage(), "Profile");
+        });
+    });
   }
 
   @override
@@ -46,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
               isPassword: true, prefixIcon: Icon(Icons.lock), onSaved: (input) => _password = input),
           SizedBox(height: 30.0),
           textLink("Don't have an account? Register here",
-              () => NavigatorHelper.pushReplacement(context, RegisterPage())),
+              () => NavigatorHelper.pushReplacement(context, RegisterPage(), "Register")),
           SizedBox(height: 30.0),
           fullButton(() => signIn(), text: "Login"),
         ]))));
@@ -65,7 +73,11 @@ class _LoginPageState extends State<LoginPage> {
         await this.loginBloc.login(this._credentials);
 
         // Go to login page
-        NavigatorHelper.pushReplacement(context, HomePage());
+        FirestoreHelper.firestoreIfExists("templates", {"=": {"auth_uid": await SessionHelper.getUserLogin()}})
+          .then((x){
+            if(x) NavigatorHelper.pushReplacement(context, ProfilePage(), "Profile");
+          });
+        NavigatorHelper.pushReplacement(context, HomePage(), "Home");
       } catch (signUpError) {
         if (signUpError is String) {
           alertError(context, signUpError);
