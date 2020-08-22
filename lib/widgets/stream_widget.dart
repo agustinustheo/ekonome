@@ -1,4 +1,6 @@
 import 'package:EkonoMe/helpers/firestore_helper.dart';
+import 'package:EkonoMe/models/ChartItemModel.dart';
+import 'package:EkonoMe/widgets/chart_bar_widget.dart';
 import 'package:EkonoMe/widgets/circularprogress_widget.dart';
 import 'package:EkonoMe/widgets/profile_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -32,6 +34,27 @@ Widget singleStream(String collectionName, {String orderByColumn = "", bool asce
     builder: (context, snapshot){
       if(!snapshot.hasData) return new Center(child: circularProgress());
       return Container();
+    }
+  );
+}
+
+Widget chartStream(Map<String, Map<String, dynamic>> query, {String orderByColumn = "", bool ascending = true, bool separator = false}){
+  return StreamBuilder(
+    stream: orderByColumn == "" ? FirestoreHelper.firestoreQueryBuilder("templates", query: query).snapshots() : FirestoreHelper.firestoreQueryBuilder("templates", query: query).orderBy(orderByColumn, descending: true).snapshots(),
+    builder: (context, snapshot){
+      if(!snapshot.hasData) return new Center(child: circularProgress());
+
+      List<dynamic> targets = snapshot.data.documents[0].data['targets'];
+      List<dynamic> funds = snapshot.data.documents[0].data['funds'];
+      List<dynamic> titles = snapshot.data.documents[0].data['titles'];
+      return ListView.builder(
+        itemBuilder: (context, index) => ChartBar(ChartItemModel(
+          targets[index] == 0 ? 0 : funds[index] / targets[index] > 1 ? 1 : funds[index] / targets[index],
+          titles[index],
+          ("Rp. " + funds[index].toString() + "/" + targets[index].toString()).toString()
+        )),
+        itemCount: titles.length,
+      );
     }
   );
 }
